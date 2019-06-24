@@ -9,9 +9,62 @@
     <link rel="stylesheet" type="text/css" href="css/reset.css">
     <link rel="stylesheet" type="text/css" href="css/iconfont.css">
     <link rel="stylesheet" type="text/css" href="css/main.css">
+    <!-- 引入bootstrap -->
+    <link rel="stylesheet" href="../bootstrap-3.3.7-dist/css/bootstrap.min.css">
 </head>
+<style>
+    .show {
+        background-color: #ccc;
+        opacity: 0.7;
+    }
 
-<body>
+    .up {
+        position: absolute;
+        width: 300px;
+        height: 200px;
+        background-color: black;
+        opacity: .5;
+        left: 50%;
+        margin-left: -150px;
+        top: 20%;
+        border-radius: 10px;
+        display: none;
+    }
+
+    .up>span {
+        display: block;
+        font-size: 16px;
+        font-weight: 700;
+        color: #ccc;
+        border-bottom: 1px solid black;
+        line-height: 40px;
+        text-indent: 20px;
+    }
+
+    .up>p {
+        padding: 35px;
+        text-align: center;
+        font-size: 16px;
+        color: #fff;
+        text-shadow: 0px 0px 10px #ccc;
+
+    }
+
+    .box {
+        width: 100%;
+        border-top: 1px solid #000;
+        padding-top: 20px;
+        bottom: 25px;
+
+    }
+
+    .cancel {
+        margin-left: 150px;
+        margin-right: 20px;
+    }
+</style>
+
+<body class="">
     <div class="main_wrap">
         <div class="header">
             <a href="#" class="logo"><img src="images/logo.png" alt=""></a>
@@ -25,12 +78,66 @@
                 <i class="iconfont icon-key"></i>
                 <input type="text" class="input_txt" placeholder="邮箱/手机号">
                 <input type="password" class="input_pass" placeholder="密码">
-                <input type="submit" class="input_sub" value="登 录">
+                <input type="submit" class="input_sub" id="btn_login" value="登 录">
             </form>
         </div>
 
-    </div> 
+    </div>
+    <div class="up">
+        <span>温馨提示</span>
+        <p>1重新输入</p>
+        <div class="box"><button class="cancel">取消</button>
+            <button class="confirm">确定</button></div>
 
+    </div>
 </body>
+<!-- 引入jq -->
+<script src="./js/jquery-1.12.4.min.js"></script>
+<!-- 引入bootstrap -->
+<script src="../bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+<script>
+    //注册点击事件
+    $(function () {
+        $('#btn_login').on('click', function (e) {
+            e.preventDefault();
+            var username = $('.input_txt').val().trim();
+            var password = $('.input_pass').val().trim();
+            if (username == '' || password == '') {
+                $('.up').show();
+                $('.up>p').text('输入信息为空');
+                $('body').addClass('show');
+                $('.box>button').on('click', function () {
+
+                    $('.up').css('display', 'none');
+                    $('body').removeClass('show');
+
+                })
+                return;
+            }
+            $.ajax({
+                type: 'post',
+                url: 'http://localhost:8000/admin/login',
+                data: {
+                    user_name: username,
+                    password: password
+                },
+                success: function (response) {
+                    if (response.code == 200) {
+                        window.location.href = './index.html';
+                    } else {
+                        $('.up').show();
+                        $('.up>p').text('账号或密码输入错误');
+                        $('body').addClass('show');
+                        $('.box>button').on('click', function () {
+                            $('.up').css('display', 'none');
+                            $('body').removeClass('show');
+                        })
+                        return;
+                    }
+                }
+            })
+        })
+    })
+</script>
 
 </html>
