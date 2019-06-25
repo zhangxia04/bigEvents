@@ -44,7 +44,7 @@
         <div class="user_center_link">
             <a href="user.html" onclick="setMenu(3,0)" target="main_frame">个人中心</a>
             <img src="images/2.jpg" alt="person">
-            <a href="#"><i class="iconfont icon-tuichu"></i> 退出</a>
+            <a href="#" id="exit"><i class="iconfont icon-tuichu "></i> 退出</a>
         </div>
     </div>
 
@@ -103,6 +103,21 @@
         }
 
     </script>
-
+<script>
+    //退出返回登录页
+    $(function(){
+        $('#exit').on('click',function(){
+            $.ajax({
+                type:'post',
+                url:'http://localhost:8000/admin/logout',
+                success:function(response){
+                    if(response.code==200){
+                        window.location.href='./login.html'
+                    }
+                }
+            })       
+        })
+    })
+</script>
 </body>
 </html>
