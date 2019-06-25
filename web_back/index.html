@@ -122,7 +122,7 @@
     $.ajax({
         url:'http://localhost:8000/admin/getuser',
         success:function(response){
-            console.log(response);
+            // console.log(response);
             //选中2个类名都是user_pic的元素赋值
             $('img.user_pic').attr('src',response.data.user_pic);
             //有html的转义符 所以用html

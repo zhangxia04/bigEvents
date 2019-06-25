@@ -94,15 +94,49 @@
     $('#exampleInputFile').on('change', function () {
         var icon = this.files[0];
         // console.log(icon);
-        var url=URL.createObjectURL(icon);
-        $('.user_pic').attr('src',url);
+        var url = URL.createObjectURL(icon);
+        $('.user_pic').attr('src', url);
 
     })
     //优化选择按钮 ​      搞一个label标签包含住那个漂亮的按钮图片, label属性for指向隐藏的那个input的id.
 
 
-        //注册点击事件修改信息
-    $()
+    //注册点击事件修改信息
+    $('.btn-success').on('click', function (e) {
+        e.preventDefault();
+        var formData = new FormData($('form')[0]);
+        // console.log(formData);
+        $.ajax({
+            type: 'post',
+            url: 'http://localhost:8000/admin/userinfo_edit',
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function (response) {
+                // console.log(response);
+                if (response.code == 200) {
+                    // console.log(1);
+                    
+                    $.ajax({
+                        url: 'http://localhost:8000/admin/getuser',
+                        success: function (response) {
+                            // console.log(response);
+                            //选中2个类名都是user_pic的元素赋值
+                            if(response.code==200){
+                                // console.log(window.parent.$('img.user_pic'))
+                                parent.$('img.user_pic').attr('src', response.data.user_pic);
+                                //   //有html的转义符 所以用html
+                                parent.$('span.nickname').html('欢迎&nbsp;&nbsp; ' + response.data.nickname);
+                            }
+                            
+                          
+                        }
+                    })
+                }
+
+            }
+        })
+    })
 </script>
 
 </html>
