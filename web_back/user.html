@@ -24,38 +24,44 @@
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">用户名称：</label>
                     <div class="col-sm-4">
-                        <input type="text" class="form-control" id="inputEmail3" value="李思思">
+                        <input type="text" class="form-control username" name="username" id="inputEmail3" value="李思思">
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">昵称：</label>
                     <div class="col-sm-4">
-                        <input type="text" class="form-control" id="inputEmail3" value="思思">
+                        <input type="text" class="form-control nickname" name="nickname" id="inputEmail3" value="思思">
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">邮箱：</label>
                     <div class="col-sm-4">
-                        <input type="text" class="form-control" id="inputEmail3" value="lisisi@126.com">
-                    </div>
-                </div>
-                
-                <div class="form-group">
-                    <label for="inputPassword3" class="col-sm-2 control-label">用户图标：</label>
-                    <div class="col-sm-10">
-                        <img src="images/2.jpg" alt="" class="user_pic">
-                        <input type="file" id="exampleInputFile">
+                        <input type="text" class="form-control email" id="inputEmail3" name="email"
+                            value="lisisi@126.com">
                     </div>
                 </div>
 
                 <div class="form-group">
-                        <label for="inputEmail3" class="col-sm-2 control-label">密码：</label>
-                        <div class="col-sm-4">
-                            <input type="password" class="form-control" id="inputEmail3" value="12345678">
-                        </div>
+                    <label for="inputPassword3" class="col-sm-2 control-label">用户图标：</label>
+                    <div class="col-sm-10">
+                        <img src="images/2.jpg" alt="" class="user_pic">
+                        <input type="file" name="user_pic" id="exampleInputFile" style="display:none"><br>
+                        <label for="exampleInputFile" style="cursor:pointer ">
+                            <img src="./uploadFileIcon.png" alt="">
+                        </label>
                     </div>
-               
-    
+                </div>
+
+                <div class="form-group">
+                    <label for="inputEmail3" class="col-sm-2 control-label">密码：</label>
+                    <div class="col-sm-4">
+                        <input type="password" class="form-control password" name="password" id="inputEmail3"
+                            value="12345678">
+
+                    </div>
+                </div>
+
+
                 <div class="form-group">
                     <div class="col-sm-offset-2 col-sm-10">
                         <button type="submit" class="btn btn-success">修改</button>
@@ -66,5 +72,37 @@
     </div>
 
 </body>
+<script>
+    /*渲染当前信息*/
+    $(function () {
+        $.ajax({
+            url: 'http://localhost:8000/admin/userinfo_get',
+            success: function (response) {
+
+                if (response.code == 200) {
+                    var obj = response.data;
+                    for (var key in obj) {
+
+                        $('input.' + key).val(obj[key]);
+                    }
+                    $('.user_pic').attr('src', obj.user_pic);
+                }
+            }
+        })
+    })
+    //图片预览
+    $('#exampleInputFile').on('change', function () {
+        var icon = this.files[0];
+        // console.log(icon);
+        var url=URL.createObjectURL(icon);
+        $('.user_pic').attr('src',url);
+
+    })
+    //优化选择按钮 ​      搞一个label标签包含住那个漂亮的按钮图片, label属性for指向隐藏的那个input的id.
+
+
+        //注册点击事件修改信息
+    $()
+</script>
 
 </html>
