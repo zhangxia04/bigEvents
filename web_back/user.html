@@ -11,10 +11,18 @@
     <link rel="stylesheet" href="css/iconfont.css">
     <link rel="stylesheet" href="css/main.css">
     <script src="js/jquery-1.12.4.min.js"></script>
-
+    <link rel="stylesheet" href="./css/up.css">
 </head>
 
 <body>
+    <div class="up">
+        <span>温馨提示</span>
+        <p></p>
+        <div class="box">
+            <button class="confirm">确定</button></div>
+
+    </div>
+
     <div class="container-fluid">
         <div class="common_title">
             用户信息修改
@@ -116,20 +124,31 @@
                 // console.log(response);
                 if (response.code == 200) {
                     // console.log(1);
-                    
+
                     $.ajax({
                         url: 'http://localhost:8000/admin/getuser',
                         success: function (response) {
                             // console.log(response);
                             //选中2个类名都是user_pic的元素赋值
-                            if(response.code==200){
+                            if (response.code == 200) {
+                                $('.up').show();
+                                $('.up>p').text('修改成功');
+                                $('body').addClass('show');
+                                $('.confirm').on('click', function () {
+
+                                    $('.up').css('display', 'none');
+                                    $('body').removeClass('show');
+
+                                })
                                 // console.log(window.parent.$('img.user_pic'))
-                                parent.$('img.user_pic').attr('src', response.data.user_pic);
+                                parent.$('img.user_pic').attr('src', response.data
+                                    .user_pic);
                                 //   //有html的转义符 所以用html
-                                parent.$('span.nickname').html('欢迎&nbsp;&nbsp; ' + response.data.nickname);
+                                parent.$('span.nickname').html('欢迎&nbsp;&nbsp; ' +
+                                    response.data.nickname);
                             }
-                            
-                          
+
+
                         }
                     })
                 }
