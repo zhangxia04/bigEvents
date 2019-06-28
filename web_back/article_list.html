@@ -23,7 +23,7 @@
                 <div class="col-xs-6">
                     <form class="form-inline">
                         <select id="selCategory" name="" class="form-control input-sm">
-                            <option>所有分类</option>
+                            <option value="">所有分类</option>
                             <option>未分类</option>
                             <option>奇趣事</option>
                             <option>会生活</option>
@@ -325,7 +325,7 @@
                     state: articleState,
                     page: 1,
                     perpage: 5
-
+                    // id:parseInt(articleType)
                 },
                 success: function (response) {
                     console.log(response);
@@ -338,6 +338,8 @@
             })
 
         })
+        //进入页面触发筛选事件
+        $('#btnSearch').trigger('click');
     </script>
 </body>
 
