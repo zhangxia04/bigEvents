@@ -267,7 +267,8 @@
 
         </div>
     </div>
-
+    <!-- 引入pagination文件 -->
+    <script src="../josecebe-twbs-pagination-5103bc4/jquery.twbsPagination.js"></script>
     <script>
         // 设置左侧菜单
         $('#release_btn').click(function () {
@@ -309,9 +310,9 @@
 
             }
         })
-        //筛选
-        $('#btnSearch').on('click', function (e) {
-            e.preventDefault();
+      
+        //渲染页面的方法
+        function getData(myPage) {
             //获取文章类型
             var articleType = $('#selCategory').val();
             //状态
@@ -323,7 +324,7 @@
                 data: {
                     type: articleType,
                     state: articleState,
-                    page: 1,
+                    page: myPage,
                     perpage: 5
                     // id:parseInt(articleType)
                 },
@@ -332,14 +333,56 @@
                     if (response.code == 200) {
                         var res = template('temp_data', response);
                         $('tbody').html(res);
+                        //每次筛选返回的总页码
+                        //-------------获取返回的总页数
+                        var totalPages = response.totalPage;
+                        //如果获取的总页数和定义的总页数不一致就赋值给定义的总页数执行以下代码
+                        if(pageCount!=totalPages){
+                            pageCount=totalPages
+                            var currentPage = $pagination.twbsPagination('getCurrentPage');
+                            $pagination.twbsPagination('destroy');
+                            $pagination.twbsPagination($.extend({}, defaultOpts, {
+                                //每次获取完新的总页数回到第一页
+                                startPage: 1,
+                                totalPages: totalPages
+                            }));
+                        }
                     }
 
                 }
             })
+        }
+        //进入页面触发筛选事件 (插件会自己调用这个方法)
+        // $('#btnSearch').trigger('click');
+        //使用插件 
+
+        //点击之后触发这个翻页事件    
+        var pageCount=10;//随便定义一个数 页码不能写死
+        var $pagination = $('.pagination');
+        var defaultOpts = {
+            totalPages: pageCount,
+            visiblePages: 7,
+            first: '首页',
+            prev: '上一页',
+            next: '下一页',
+            last: '尾页',
+            //点击之后触发这个翻页事件    
+            onPageClick: function (event, page) {
+                getData(page)
+            }
+
+        }
+        $pagination.twbsPagination(defaultOpts);
+
+          //筛选
+          $('#btnSearch').on('click', function (e) {
+            e.preventDefault();
+            getData(1)
 
         })
-        //进入页面触发筛选事件
-        $('#btnSearch').trigger('click');
+        //编辑
+
+
     </script>
 </body>
 
