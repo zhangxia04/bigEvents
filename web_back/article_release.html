@@ -40,7 +40,7 @@
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">文章类别：</label>
                     <div class="col-sm-4">
-                        <select class="form-control">
+                        <select class="form-control article_type">
                             <option>1</option>
                             <option>2</option>
                             <option>3</option>
@@ -54,7 +54,7 @@
                     <div class="col-sm-4">
 
                         <div class="input-group">
-                            <input type="text" class="form-control" placeholder="YYYY-MM-DD" id="dateinput">
+                            <input type="text" class="form-control article_date" placeholder="YYYY-MM-DD" id="dateinput">
                             <span class="input-group-btn">
                                 <button class="btn btn-default" type="button"
                                     onclick="jeDate('#dateinput',{trigger:false,format: 'YYYY-MM-DD'})"><i
@@ -83,12 +83,15 @@
 
 </body>
 <script src="./js/template-web.js"></script>
+<!-- 引入moment js -->
+<script src="./js/moment.js"></script>
 <script id="article_tep" type="text/html">
     {{each data v }}
     <option id="{{v.id}}">{{v.name}}</option>
     {{/each}}
 </script>
 <script>
+    //文章标题渲染
     //图片预览功能
     $('#exampleInputFile').on('change', function () {
         var icon = this.files[0];
@@ -104,10 +107,13 @@
             console.log(response);
             if (response.code == 200) {
                 var res = template('article_tep', response);
-                $('.form-control').html(res);
+                $('.article_type').html(res);
             }
         }
     })
+    //一进入页面完成日期渲染
+    
+  $('.article_date').val(moment().format(' YYYY-MM-DD '));  
 </script>
 
 </html>
