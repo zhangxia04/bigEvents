@@ -15,6 +15,7 @@
     <script src="js/jedate/js/jedate.js"></script>
     <script src="js/tinymce/js/tinymce/tinymce.min.js"></script>
     <script src="js/tinymce/js/tinymce_setup.js"></script>
+    <link rel="stylesheet" href="./css/up.css">
 </head>
 
 <body>
@@ -27,20 +28,20 @@
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">文章标题：</label>
                     <div class="col-sm-10">
-                        <input type="email" class="form-control" id="inputEmail3" placeholder="文章标题">
+                        <input type="text" class="form-control" name="title" id="inputEmail3" placeholder="文章标题">
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="inputPassword3" class="col-sm-2 control-label">文章封面：</label>
                     <div class="col-sm-10">
                         <img src="" alt="" style="height: 150px">
-                        <input type="file" id="exampleInputFile">
+                        <input type="file" name="cover" id="exampleInputFile">
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">文章类别：</label>
                     <div class="col-sm-4">
-                        <select class="form-control article_type">
+                        <select name="type" class="form-control article_type">
                             <option>1</option>
                             <option>2</option>
                             <option>3</option>
@@ -54,7 +55,7 @@
                     <div class="col-sm-4">
 
                         <div class="input-group">
-                            <input type="text" class="form-control article_date" placeholder="YYYY-MM-DD" id="dateinput">
+                            <input type="text" name="date" class="form-control article_date" placeholder="YYYY-MM-DD" id="dateinput">
                             <span class="input-group-btn">
                                 <button class="btn btn-default" type="button"
                                     onclick="jeDate('#dateinput',{trigger:false,format: 'YYYY-MM-DD'})"><i
@@ -80,18 +81,23 @@
             </form>
         </div>
     </div>
+    <div class="up">
+        <span>温馨提示</span>
+        <p></p>
+        <div class="box">
+            <button class="confirm">确定</button></div>
 
+    </div>
 </body>
 <script src="./js/template-web.js"></script>
 <!-- 引入moment js -->
 <script src="./js/moment.js"></script>
 <script id="article_tep" type="text/html">
     {{each data v }}
-    <option id="{{v.id}}">{{v.name}}</option>
+    <option value="{{v.id}}">{{v.name}}</option>
     {{/each}}
 </script>
 <script>
-    //文章标题渲染
     //图片预览功能
     $('#exampleInputFile').on('change', function () {
         var icon = this.files[0];
@@ -104,7 +110,7 @@
     $.ajax({
         url: 'http://localhost:8000/admin/category_search',
         success: function (response) {
-            console.log(response);
+            // console.log(response);
             if (response.code == 200) {
                 var res = template('article_tep', response);
                 $('.article_type').html(res);
@@ -112,8 +118,47 @@
         }
     })
     //一进入页面完成日期渲染
+
     
   $('.article_date').val(moment().format(' YYYY-MM-DD '));  
+  $('.btn-success').on('click',function(e){
+      e.preventDefault();
+      var formData= new FormData($('form')[0]);
+      var content =tinyMCE.activeEditor.getContent()
+      formData.append('state','草稿')
+      formData.append('content',content)
+    //   console.log(formData);
+      $.ajax({
+        type:'post',
+        url:'http://localhost:8000/admin/article_publish',
+        data:formData,
+        contentType:false,
+        processData:false,
+        success:function(response){
+            console.log(response);
+            if(response.code==201){
+                $('.up').show();
+                // $('.up').css({
+                //     top:0,
+                //     right:0,
+                //     bottom:0,
+                //     top:0 + '!important',
+                //     margin:'auto'
+                // })
+                $('.up>p').text('发布成功');
+                $('body').addClass('show');
+                $('.confirm').on('click', function () {
+
+                    $('.up').css('display', 'none');
+                    $('body').removeClass('show');
+
+                })
+            }
+        }
+      })
+      
+      
+  })
 </script>
 
 </html>

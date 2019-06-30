@@ -70,7 +70,7 @@
 
                         <td class="text-center">
                             <a href="article_edit.html" class="btn btn-default btn-xs">编辑</a>
-                            <a href="javascript:deleteTr( 1005 );" class="btn btn-danger btn-xs">删除</a>
+                            <a href="#" class="btn btn-danger btn-xs">删除</a>
                         </td>
                     </tr>
 
@@ -89,7 +89,7 @@
 
                         <td class="text-center">
                             <a href="article_edit.html" class="btn btn-default btn-xs">编辑</a>
-                            <a href="javascript:deleteTr( 1004 );" class="btn btn-danger btn-xs">删除</a>
+                            <a href="#" class="btn btn-danger btn-xs">删除</a>
                         </td>
                     </tr>
 
@@ -108,7 +108,7 @@
 
                         <td class="text-center">
                             <a href="article_edit.html" class="btn btn-default btn-xs">编辑</a>
-                            <a href="javascript:deleteTr( 1003 );" class="btn btn-danger btn-xs">删除</a>
+                            <a href="#" class="btn btn-danger btn-xs">删除</a>
                         </td>
                     </tr>
 
@@ -127,7 +127,7 @@
 
                         <td class="text-center">
                             <a href="post-edit.html?id=1002" class="btn btn-default btn-xs">编辑</a>
-                            <a href="javascript:deleteTr( 1002 );" class="btn btn-danger btn-xs">删除</a>
+                            <a href="#" class="btn btn-danger btn-xs">删除</a>
                         </td>
                     </tr>
 
@@ -146,7 +146,7 @@
 
                         <td class="text-center">
                             <a href="post-edit.html?id=1001" class="btn btn-default btn-xs">编辑</a>
-                            <a href="javascript:deleteTr( 1001 );" class="btn btn-danger btn-xs">删除</a>
+                            <a href="#" class="btn btn-danger btn-xs">删除</a>
                         </td>
                     </tr>
 
@@ -165,7 +165,7 @@
 
                         <td class="text-center">
                             <a href="post-edit.html?id=1000" class="btn btn-default btn-xs">编辑</a>
-                            <a href="javascript:deleteTr( 1000 );" class="btn btn-danger btn-xs">删除</a>
+                            <a href="#" class="btn btn-danger btn-xs">删除</a>
                         </td>
                     </tr>
 
@@ -184,7 +184,7 @@
 
                         <td class="text-center">
                             <a href="post-edit.html?id=999" class="btn btn-default btn-xs">编辑</a>
-                            <a href="javascript:deleteTr( 999 );" class="btn btn-danger btn-xs">删除</a>
+                            <a href="#" class="btn btn-danger btn-xs">删除</a>
                         </td>
                     </tr>
 
@@ -203,7 +203,7 @@
 
                         <td class="text-center">
                             <a href="post-edit.html?id=998" class="btn btn-default btn-xs">编辑</a>
-                            <a href="javascript:deleteTr( 998 );" class="btn btn-danger btn-xs">删除</a>
+                            <a href="#" class="btn btn-danger btn-xs">删除</a>
                         </td>
                     </tr>
 
@@ -222,7 +222,7 @@
 
                         <td class="text-center">
                             <a href="post-edit.html?id=996" class="btn btn-default btn-xs">编辑</a>
-                            <a href="javascript:deleteTr( 996 );" class="btn btn-danger btn-xs">删除</a>
+                            <a href="#" class="btn btn-danger btn-xs">删除</a>
                         </td>
                     </tr>
 
@@ -241,7 +241,7 @@
 
                         <td class="text-center">
                             <a href="post-edit.html?id=995" class="btn btn-default btn-xs">编辑</a>
-                            <a href="javascript:deleteTr( 995 );" class="btn btn-danger btn-xs">删除</a>
+                            <a href="#" class="btn btn-danger btn-xs">删除</a>
                         </td>
                     </tr>
 
@@ -292,7 +292,7 @@
             <td class="text-center">{{v.state}}</td>
             <td class="text-center">
                 <a href="article_edit.html?id={{v.id}}" class="btn btn-default btn-xs">编辑</a>
-                <a href="javascript:deleteTr( {{v.id}} );" class="btn btn-danger btn-xs">删除</a>
+                <a href="#"  data-id="{{v.id}}"  class="btn btn-danger btn-xs btn-delete">删除</a>
             </td>
         </tr>
         {{/each}}
@@ -317,7 +317,7 @@
             var articleType = $('#selCategory').val();
             //状态
             var articleState = $('#selStatus').val();
-            console.log(articleType, articleState);
+            // console.log(articleType, articleState);
 
             $.ajax({
                 url: 'http://localhost:8000/admin/search',
@@ -329,17 +329,19 @@
                     // id:parseInt(articleType)
                 },
                 success: function (response) {
-                    console.log(response);
+                    // console.log(response);
                     if (response.code == 200) {
                         var res = template('temp_data', response);
                         $('tbody').html(res);
                         //每次筛选返回的总页码
                         //-------------获取返回的总页数
                         var totalPages = response.totalPage;
+                        window.currentPage = $pagination.twbsPagination('getCurrentPage');
+
                         //如果获取的总页数和定义的总页数不一致就赋值给定义的总页数执行以下代码
                         if(pageCount!=totalPages){
                             pageCount=totalPages
-                            var currentPage = $pagination.twbsPagination('getCurrentPage');
+                            // window.myPage=currentPage
                             $pagination.twbsPagination('destroy');
                             $pagination.twbsPagination($.extend({}, defaultOpts, {
                                 //每次获取完新的总页数回到第一页
@@ -369,6 +371,7 @@
             //点击之后触发这个翻页事件    
             onPageClick: function (event, page) {
                 getData(page)
+                // window.myPage=page;
             }
 
         }
@@ -380,7 +383,25 @@
             getData(1)
 
         })
-        //编辑
+        
+        //删除点击事件
+        $('tbody').on('click','.btn-delete',function(){
+            var id = $(this).attr('data-id');
+            // console.log(id);
+            
+            $.ajax({
+                url:'http://localhost:8000/admin/article_delete',
+                data:{
+                    id:$(this).attr('data-id')
+                },
+                success:function(response){
+                    console.log(response);
+                    console.log($(this));
+                    getData( window.currentPage);
+                    
+                }
+            })
+        })
 
 
     </script>
